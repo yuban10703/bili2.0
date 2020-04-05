@@ -22,7 +22,9 @@ class UtilsReq:
     async def post_watching_history(user, room_id):
         data = {
             "room_id": room_id,
-            "csrf_token": user.dict_bili['csrf']
+            "csrf_token": user.dict_bili['csrf'],
+            "csrf": user.dict_bili['csrf'],
+            "platform": "pc",
         }
         url = f"{API_LIVE}/room/v1/Room/room_entry_action"
         response = await user.bililive_session.request_json('POST', url, data=data, headers=user.dict_bili['pcheaders'])
@@ -32,7 +34,8 @@ class UtilsReq:
     async def init_room(user, roomid):
         url = f"{API_LIVE}/room/v1/Room/room_init?id={roomid}"
         # {"code":60004,"msg":"房间不存在","message":"房间不存在","data":[]}
-        response = await user.bililive_session.request_json('GET', url)
+        # api会抽风
+        response = await user.bililive_session.request_json('GET', url, ignore_status_codes = (403,))
         return response
         
     @staticmethod
